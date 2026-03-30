@@ -1,15 +1,37 @@
 {
-  "name": "konid-ai",
-  "version": "0.1.0",
+  "name": "kodin-ai",
+  "version": "1.0.0",
   "type": "module",
-  "private": true,
-  "description": "Language expression coach with audio — MCP server",
-  "scripts": {
-    "start": "tsx src/index.ts"
+  "description": "Language expression wizard with audio — MCP server for Claude Code",
+  "bin": {
+    "kodin-ai": "./dist/index.js"
   },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "start": "node dist/index.js",
+    "dev": "tsx src/index.ts",
+    "prepublishOnly": "npm run build"
+  },
+  "keywords": [
+    "mcp",
+    "claude-code",
+    "language-learning",
+    "tts",
+    "mcp-server"
+  ],
+  "license": "MIT",
+  "author": "Robert Nowell",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/robertnowell/kodin-ai"
+  },
+  "homepage": "https://github.com/robertnowell/kodin-ai",
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.12.0",
-    "openai": "^6.21.0",
+    "@anthropic-ai/sdk": "^0.39.0",
     "zod": "^3.23.8"
   },
   "devDependencies": {

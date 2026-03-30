@@ -1,16 +1,17 @@
+#!/usr/bin/env node
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
 import { z } from "zod";
-import OpenAI from "openai";
-import { writeFile, mkdir } from "node:fs/promises";
+import Anthropic from "@anthropic-ai/sdk";
+import { mkdir } from "node:fs/promises";
 import { join } from "node:path";
 import { tmpdir } from "node:os";
 import { execFile } from "node:child_process";
 import { promisify } from "node:util";
 
 const execFileAsync = promisify(execFile);
-const openai = new OpenAI();
-const AUDIO_DIR = join(tmpdir(), "konid-ai");
+const anthropic = new Anthropic();
+const AUDIO_DIR = join(tmpdir(), "kodin-ai");
 
 // --- Coaching prompt ---
 
@@ -92,11 +93,42 @@ function resolveVoice(voice: string | undefined, targetLanguage: string): string
   return VOICE_MAP["zh-CN"]; // default
 }
 
+// --- Cross-platform audio playback ---
+
+async function playAudio(filepath: string): Promise<void> {
+  const platform = process.platform;
+  try {
+    if (platform === "darwin") {
+      await execFileAsync("afplay", [filepath]);
+    } else if (platform === "linux") {
+      for (const player of ["mpv", "paplay", "aplay"]) {
+        try {
+          await execFileAsync(player, [filepath]);
+          return;
+        } catch {
+          continue;
+        }
+      }
+    } else if (platform === "win32") {
+      await execFileAsync("powershell", [
+        "-c",
+        `(New-Object Media.SoundPlayer '${filepath}').PlaySync()`,
+      ]);
+    }
+  } catch {
+    // Silent failure — file path is in the response text
+  }
+}
+
+// --- State ---
+
+let lastAudioFile: string | null = null;
+
 // --- MCP Server ---
 
 const server = new McpServer({
-  name: "konid-ai",
-  version: "0.1.0",
+  name: "kodin-ai",
+  version: "1.0.0",
 });
 
 server.tool(
@@ -118,21 +150,19 @@ server.tool(
       ? `Idea: "${text}"\nContext: ${context}`
       : `Idea: "${text}"`;
 
-    const response = await openai.chat.completions.create({
-      model: "gpt-4o-mini",
-      messages: [
-        { role: "system", content: buildCoachingPrompt(target_language) },
-        { role: "user", content: userMessage },
-      ],
-      temperature: 0.7,
-      max_tokens: 1000,
+    const response = await anthropic.messages.create({
+      model: "claude-opus-4-6",
+      max_tokens: 1024,
+      system: buildCoachingPrompt(target_language),
+      messages: [{ role: "user", content: userMessage }],
     });
 
+    const textBlock = response.content.find((b) => b.type === "text");
     return {
       content: [
         {
           type: "text" as const,
-          text: response.choices[0]?.message?.content ?? "No response generated.",
+          text: textBlock && "text" in textBlock ? textBlock.text : "No response generated.",
         },
       ],
     };
@@ -144,6 +174,10 @@ server.tool(
   "Speak text aloud using text-to-speech. Generates audio and plays it through speakers. Use after coach to hear how a phrase sounds.",
   {
     text: z.string().describe("The text to speak (in the target language)"),
+    meaning: z
+      .string()
+      .optional()
+      .describe("English meaning of the text (e.g. 'thanks', 'thank you'). Include this so the output is understandable without context."),
     slow: z
       .boolean()
       .default(false)
@@ -153,11 +187,11 @@ server.tool(
       .optional()
       .describe("edge-tts voice name (e.g. 'zh-CN-YunjianNeural', 'zh-CN-XiaoxiaoNeural'). Auto-detected from text if omitted."),
   },
-  async ({ text, slow, voice }) => {
+  async ({ text, meaning, slow, voice }) => {
     await mkdir(AUDIO_DIR, { recursive: true });
 
     const resolvedVoice = voice ?? VOICE_MAP["zh-CN"];
-    const filepath = join(AUDIO_DIR, `konid-${Date.now()}.mp3`);
+    const filepath = join(AUDIO_DIR, `kodin-${Date.now()}.mp3`);
 
     const args = [
       "--text", text,
@@ -184,13 +218,43 @@ server.tool(
     }
 
     // Play audio (fire-and-forget)
-    execFileAsync("/usr/bin/afplay", [filepath]).catch(() => {});
+    lastAudioFile = filepath;
+    playAudio(filepath);
 
     return {
       content: [
         {
           type: "text" as const,
-          text: `Speaking: "${text}"\nVoice: ${resolvedVoice} | Speed: ${slow ? "slow" : "normal"}\nAudio: ${filepath}`,
+          text: `Speaking: "${text}"${meaning ? ` — ${meaning}` : ""}\nVoice: ${resolvedVoice} | Speed: ${slow ? "slow" : "normal"}\nAudio: ${filepath}`,
+        },
+      ],
+    };
+  },
+);
+
+server.tool(
+  "replay",
+  "Replay the last spoken audio clip. Use when the user says 'again', 'replay', 'repeat', or 'play it again'.",
+  {},
+  async () => {
+    if (!lastAudioFile) {
+      return {
+        content: [
+          {
+            type: "text" as const,
+            text: "Nothing to replay — use speak first.",
+          },
+        ],
+      };
+    }
+
+    playAudio(lastAudioFile);
+
+    return {
+      content: [
+        {
+          type: "text" as const,
+          text: `Replaying: ${lastAudioFile}`,
         },
       ],
     };

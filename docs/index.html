@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>kodin — Your Language Expression Wizard</title>
+  <meta name="description" content="An MCP server for Claude Code that coaches you on natural, socially-aware expression in any language. Not a translator — an expression wizard.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:ital,wght@0,400;0,600;0,700;1,400&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --purple-deep: #2d1b4e;
+      --purple-mid: #5b3a8c;
+      --purple-light: #9b7ec8;
+      --purple-glow: #c4a6f0;
+      --gold: #d4a843;
+      --gold-light: #f0d68a;
+      --cream: #faf6ef;
+      --cream-dark: #f0e8d8;
+      --text: #2a2235;
+      --text-muted: #6b5e7a;
+      --code-bg: #1e1432;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Inter', system-ui, -apple-system, sans-serif;
+      color: var(--text);
+      background: var(--cream);
+      line-height: 1.6;
+    }
+
+    /* --- Hero --- */
+
+    .hero {
+      background: linear-gradient(135deg, var(--purple-deep) 0%, var(--purple-mid) 50%, #3d2266 100%);
+      color: white;
+      text-align: center;
+      padding: 5rem 2rem 4rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: radial-gradient(ellipse at 30% 50%, rgba(212, 168, 67, 0.08) 0%, transparent 50%),
+                  radial-gradient(ellipse at 70% 30%, rgba(155, 126, 200, 0.1) 0%, transparent 50%);
+      pointer-events: none;
+    }
+
+    .hero-content {
+      position: relative;
+      max-width: 700px;
+      margin: 0 auto;
+    }
+
+    .wizard-icon {
+      font-size: 4rem;
+      margin-bottom: 1rem;
+      display: inline-block;
+      animation: float 3s ease-in-out infinite;
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-8px); }
+    }
+
+    .hero h1 {
+      font-family: 'Crimson Pro', Georgia, serif;
+      font-size: 4rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      margin-bottom: 0.5rem;
+    }
+
+    .hero h1 span {
+      color: var(--gold-light);
+    }
+
+    .hero .tagline {
+      font-family: 'Crimson Pro', Georgia, serif;
+      font-size: 1.4rem;
+      font-weight: 400;
+      font-style: italic;
+      color: var(--purple-glow);
+      margin-bottom: 1.5rem;
+    }
+
+    .hero .subtitle {
+      font-size: 1.1rem;
+      color: rgba(255, 255, 255, 0.8);
+      max-width: 500px;
+      margin: 0 auto 2rem;
+    }
+
+    .cta-button {
+      display: inline-block;
+      background: var(--gold);
+      color: var(--purple-deep);
+      font-weight: 600;
+      padding: 0.8rem 2rem;
+      border-radius: 8px;
+      text-decoration: none;
+      font-size: 1rem;
+      transition: all 0.2s;
+    }
+
+    .cta-button:hover {
+      background: var(--gold-light);
+      transform: translateY(-1px);
+      box-shadow: 0 4px 20px rgba(212, 168, 67, 0.3);
+    }
+
+    /* --- Sections --- */
+
+    section {
+      padding: 4rem 2rem;
+      max-width: 800px;
+      margin: 0 auto;
+    }
+
+    h2 {
+      font-family: 'Crimson Pro', Georgia, serif;
+      font-size: 2rem;
+      font-weight: 600;
+      color: var(--purple-deep);
+      margin-bottom: 1.5rem;
+    }
+
+    /* --- Demo --- */
+
+    .demo {
+      background: var(--cream-dark);
+      border-radius: 12px;
+      padding: 2rem;
+      margin: 2rem 0;
+    }
+
+    .demo-step {
+      margin-bottom: 2rem;
+    }
+
+    .demo-step:last-child {
+      margin-bottom: 0;
+    }
+
+    .demo-label {
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--purple-mid);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 0.5rem;
+    }
+
+    .terminal {
+      background: var(--code-bg);
+      border-radius: 8px;
+      padding: 1.25rem 1.5rem;
+      font-family: 'SF Mono', 'Fira Code', 'Cascadia Code', monospace;
+      font-size: 0.9rem;
+      line-height: 1.7;
+      color: #e0d8f0;
+      overflow-x: auto;
+    }
+
+    .terminal .prompt {
+      color: var(--gold);
+    }
+
+    .terminal .dim {
+      color: #7a6b8a;
+    }
+
+    .terminal .highlight {
+      color: var(--purple-glow);
+    }
+
+    .terminal .green {
+      color: #7ec89b;
+    }
+
+    .terminal .option-num {
+      color: var(--gold-light);
+      font-weight: 600;
+    }
+
+    .terminal .chinese {
+      color: #fff;
+      font-weight: 600;
+    }
+
+    /* --- Features --- */
+
+    .features-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.5rem;
+      margin-top: 1.5rem;
+    }
+
+    .feature {
+      padding: 1.25rem;
+      border-radius: 10px;
+      background: white;
+      border: 1px solid rgba(91, 58, 140, 0.1);
+    }
+
+    .feature-icon {
+      font-size: 1.5rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .feature h3 {
+      font-family: 'Crimson Pro', Georgia, serif;
+      font-size: 1.15rem;
+      font-weight: 600;
+      color: var(--purple-deep);
+      margin-bottom: 0.3rem;
+    }
+
+    .feature p {
+      font-size: 0.9rem;
+      color: var(--text-muted);
+    }
+
+    /* --- Install --- */
+
+    .install-section {
+      background: var(--purple-deep);
+      color: white;
+      padding: 3rem 2rem;
+      text-align: center;
+    }
+
+    .install-section h2 {
+      color: var(--gold-light);
+    }
+
+    .install-box {
+      background: var(--code-bg);
+      border: 1px solid rgba(155, 126, 200, 0.3);
+      border-radius: 10px;
+      padding: 1.5rem 2rem;
+      max-width: 600px;
+      margin: 1.5rem auto;
+      text-align: left;
+    }
+
+    .install-box code {
+      font-family: 'SF Mono', 'Fira Code', monospace;
+      font-size: 0.95rem;
+      color: var(--gold-light);
+      display: block;
+      padding: 0.5rem 0;
+    }
+
+    .install-box .label {
+      font-size: 0.8rem;
+      color: var(--purple-light);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-top: 1rem;
+      margin-bottom: 0.25rem;
+    }
+
+    .install-box .label:first-child {
+      margin-top: 0;
+    }
+
+    .prereqs {
+      max-width: 500px;
+      margin: 1.5rem auto 0;
+      text-align: left;
+      color: rgba(255, 255, 255, 0.7);
+      font-size: 0.9rem;
+    }
+
+    .prereqs li {
+      margin-bottom: 0.3rem;
+    }
+
+    .prereqs code {
+      background: rgba(155, 126, 200, 0.2);
+      padding: 0.1rem 0.4rem;
+      border-radius: 3px;
+      font-family: 'SF Mono', monospace;
+      font-size: 0.85rem;
+      color: var(--purple-glow);
+    }
+
+    /* --- Languages --- */
+
+    .lang-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+      gap: 0.75rem;
+      margin-top: 1rem;
+    }
+
+    .lang-tag {
+      background: white;
+      border: 1px solid rgba(91, 58, 140, 0.1);
+      border-radius: 6px;
+      padding: 0.5rem 0.75rem;
+      font-size: 0.9rem;
+      text-align: center;
+    }
+
+    .lang-tag .flag {
+      margin-right: 0.3rem;
+    }
+
+    .lang-note {
+      margin-top: 1rem;
+      font-size: 0.9rem;
+      color: var(--text-muted);
+      font-style: italic;
+    }
+
+    /* --- Footer --- */
+
+    footer {
+      text-align: center;
+      padding: 3rem 2rem;
+      color: var(--text-muted);
+      font-size: 0.9rem;
+    }
+
+    footer a {
+      color: var(--purple-mid);
+      text-decoration: none;
+    }
+
+    footer a:hover {
+      text-decoration: underline;
+    }
+
+    footer .wizard-hat {
+      font-size: 1.5rem;
+      display: block;
+      margin-bottom: 0.5rem;
+    }
+
+    /* --- Responsive --- */
+
+    @media (max-width: 600px) {
+      .hero h1 { font-size: 2.5rem; }
+      .hero .tagline { font-size: 1.1rem; }
+      .features-grid { grid-template-columns: 1fr; }
+      section { padding: 3rem 1.5rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Hero -->
+  <header class="hero">
+    <div class="hero-content">
+      <div class="wizard-icon">&#x1F9D9;</div>
+      <h1><span>kodin</span></h1>
+      <p class="tagline">Your language expression wizard</p>
+      <p class="subtitle">
+        An MCP server for Claude Code that coaches you on natural, socially-aware expression in any language. Not a translator &mdash; a wizard.
+      </p>
+      <a href="#install" class="cta-button">Install in Claude Code</a>
+    </div>
+  </header>
+
+  <!-- How it Works -->
+  <section>
+    <h2>How it works</h2>
+    <p>Tell kodin what you want to say. It shows you how a native speaker would actually say it &mdash; with cultural context, tone notes, and audio you can play through your speakers.</p>
+
+    <div class="demo">
+      <div class="demo-step">
+        <div class="demo-label">You ask</div>
+        <div class="terminal">
+          <span class="prompt">&#x276F;</span> how do I say "we'll see" in Chinese?
+        </div>
+      </div>
+
+      <div class="demo-step">
+        <div class="demo-label">kodin coaches</div>
+        <div class="terminal">
+          <span class="option-num">1.</span> <span class="chinese">&#20877;&#35828;&#21543;</span> <span class="dim">(z&agrave;i shuō ba)</span><br>
+          &nbsp;&nbsp;&nbsp;<span class="dim">Literal:</span> again say [particle]<br>
+          &nbsp;&nbsp;&nbsp;<span class="dim">Tone:</span> <span class="highlight">Very casual, slightly evasive. Can function as a soft &ldquo;no&rdquo;.</span><br>
+          <br>
+          <span class="option-num">2.</span> <span class="chinese">&#30475;&#24773;&#20917;&#21543;</span> <span class="dim">(k&agrave;n q&iacute;ngku&agrave;ng ba)</span><br>
+          &nbsp;&nbsp;&nbsp;<span class="dim">Literal:</span> look situation [particle]<br>
+          &nbsp;&nbsp;&nbsp;<span class="dim">Tone:</span> <span class="highlight">Neutral-casual. Genuinely open-minded.</span><br>
+          <br>
+          <span class="option-num">3.</span> <span class="chinese">&#21040;&#26102;&#20505;&#20877;&#30475;&#21543;</span> <span class="dim">(d&agrave;o sh&iacute;hou z&agrave;i k&agrave;n ba)</span><br>
+          &nbsp;&nbsp;&nbsp;<span class="dim">Literal:</span> arrive time again look [particle]<br>
+          &nbsp;&nbsp;&nbsp;<span class="dim">Tone:</span> <span class="highlight">Measured, works in casual and semi-formal contexts.</span><br>
+          <br>
+          <span class="green">Social note:</span> <span class="dim">&#20877;&#35828;&#21543; is frequently used as a polite way to decline without directly saying no. If you genuinely mean &ldquo;we&rsquo;ll see,&rdquo; go with &#30475;&#24773;&#20917;&#21543;.</span>
+        </div>
+      </div>
+
+      <div class="demo-step">
+        <div class="demo-label">You listen</div>
+        <div class="terminal">
+          <span class="prompt">&#x276F;</span> speak 1<br>
+          <span class="green">&#9654; Playing audio through speakers...</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Features -->
+  <section>
+    <h2>What makes kodin different</h2>
+    <div class="features-grid">
+      <div class="feature">
+        <div class="feature-icon">&#x1F3AD;</div>
+        <h3>Expression, not translation</h3>
+        <p>Teaches you what a native speaker would actually say, not textbook phrases.</p>
+      </div>
+      <div class="feature">
+        <div class="feature-icon">&#x1F3AF;</div>
+        <h3>3 calibrated options</h3>
+        <p>Casual to formal, each with romanization, literal meaning, and tone notes.</p>
+      </div>
+      <div class="feature">
+        <div class="feature-icon">&#x1F30D;</div>
+        <h3>Cultural context</h3>
+        <p>Social notes so you don't accidentally decline when you meant "maybe."</p>
+      </div>
+      <div class="feature">
+        <div class="feature-icon">&#x1F50A;</div>
+        <h3>Audio playback</h3>
+        <p>Hear it spoken aloud. Say "speak slowly" for clearer pronunciation.</p>
+      </div>
+      <div class="feature">
+        <div class="feature-icon">&#x1F4AC;</div>
+        <h3>Context-aware</h3>
+        <p>Tell it you're texting a date vs. emailing a boss &mdash; the options adapt.</p>
+      </div>
+      <div class="feature">
+        <div class="feature-icon">&#x1F30F;</div>
+        <h3>14+ languages</h3>
+        <p>Chinese, Japanese, Korean, Spanish, French, German, and more.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Install -->
+  <section class="install-section" id="install">
+    <h2>Get started</h2>
+    <div class="install-box">
+      <div class="label">One command</div>
+      <code>claude mcp add kodin-ai -- npx -y kodin-ai</code>
+      <div class="label">Or add to .mcp.json</div>
+      <code>{<br>&nbsp;&nbsp;"mcpServers": {<br>&nbsp;&nbsp;&nbsp;&nbsp;"kodin": {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"command": "npx",<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"args": ["-y", "kodin-ai"]<br>&nbsp;&nbsp;&nbsp;&nbsp;}<br>&nbsp;&nbsp;}<br>}</code>
+    </div>
+    <ul class="prereqs">
+      <li>Node.js 18+</li>
+      <li><a href="https://docs.anthropic.com/en/docs/claude-code" style="color: var(--purple-glow)">Claude Code</a></li>
+      <li>Python 3 with edge-tts: <code>pip install edge-tts</code></li>
+      <li><code>ANTHROPIC_API_KEY</code> environment variable</li>
+    </ul>
+  </section>
+
+  <!-- Languages -->
+  <section>
+    <h2>Supported languages</h2>
+    <div class="lang-grid">
+      <div class="lang-tag"><span class="flag">&#x1F1E8;&#x1F1F3;</span> Chinese</div>
+      <div class="lang-tag"><span class="flag">&#x1F1EF;&#x1F1F5;</span> Japanese</div>
+      <div class="lang-tag"><span class="flag">&#x1F1F0;&#x1F1F7;</span> Korean</div>
+      <div class="lang-tag"><span class="flag">&#x1F1EA;&#x1F1F8;</span> Spanish</div>
+      <div class="lang-tag"><span class="flag">&#x1F1EB;&#x1F1F7;</span> French</div>
+      <div class="lang-tag"><span class="flag">&#x1F1E9;&#x1F1EA;</span> German</div>
+      <div class="lang-tag"><span class="flag">&#x1F1E7;&#x1F1F7;</span> Portuguese</div>
+      <div class="lang-tag"><span class="flag">&#x1F1EE;&#x1F1F9;</span> Italian</div>
+      <div class="lang-tag"><span class="flag">&#x1F1F7;&#x1F1FA;</span> Russian</div>
+      <div class="lang-tag"><span class="flag">&#x1F1F8;&#x1F1E6;</span> Arabic</div>
+      <div class="lang-tag"><span class="flag">&#x1F1EE;&#x1F1F3;</span> Hindi</div>
+      <div class="lang-tag"><span class="flag">&#x1F1EC;&#x1F1E7;</span> English</div>
+    </div>
+    <p class="lang-note">Any language Claude knows can be coached &mdash; these have built-in voice support with auto-detection.</p>
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    <span class="wizard-hat">&#x1F9D9;</span>
+    <p>
+      <a href="https://github.com/robertnowell/kodin-ai">GitHub</a> &middot;
+      <a href="https://www.npmjs.com/package/kodin-ai">npm</a> &middot;
+      MIT License
+    </p>
+    <p style="margin-top: 0.5rem">Made with a twinkle in the eye</p>
+  </footer>
+
+</body>
+</html>

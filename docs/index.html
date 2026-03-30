@@ -368,8 +368,9 @@
       <div class="wizard-icon">&#x1F9D9;</div>
       <h1><span>konid</span></h1>
       <p class="tagline">Your language expression wizard</p>
+      <p class="subtitle" style="font-size: 0.95rem; color: rgba(255,255,255,0.5); margin-bottom: 0.5rem;"><em>konid</em> (&#1705;&#1606;&#1740;&#1583;) &mdash; Farsi for &ldquo;do.&rdquo; Take action.</p>
       <p class="subtitle">
-        An MCP server for Claude Code that coaches you on natural, socially-aware expression in any language. Not a translator &mdash; a wizard.
+        An MCP server that coaches you on natural, socially-aware expression in any language. Not a translator &mdash; a wizard.
       </p>
       <a href="#install" class="cta-button">Install in Claude Code</a>
     </div>
@@ -458,16 +459,17 @@
   <section class="install-section" id="install">
     <h2>Get started</h2>
     <div class="install-box">
-      <div class="label">One command</div>
+      <div class="label">Claude Code</div>
       <code>claude mcp add konid-ai -- npx -y konid-ai</code>
-      <div class="label">Or add to .mcp.json</div>
-      <code>{<br>&nbsp;&nbsp;"mcpServers": {<br>&nbsp;&nbsp;&nbsp;&nbsp;"konid": {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"command": "npx",<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"args": ["-y", "konid-ai"]<br>&nbsp;&nbsp;&nbsp;&nbsp;}<br>&nbsp;&nbsp;}<br>}</code>
+      <div class="label">Cursor / Windsurf</div>
+      <code style="font-size: 0.85rem">{<br>&nbsp;&nbsp;"mcpServers": {<br>&nbsp;&nbsp;&nbsp;&nbsp;"konid": {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"command": "npx",<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"args": ["-y", "konid-ai"]<br>&nbsp;&nbsp;&nbsp;&nbsp;}<br>&nbsp;&nbsp;}<br>}</code>
+      <div class="label">VS Code (Copilot)</div>
+      <code style="font-size: 0.85rem">{<br>&nbsp;&nbsp;"servers": {<br>&nbsp;&nbsp;&nbsp;&nbsp;"konid": {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"command": "npx",<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"args": ["-y", "konid-ai"]<br>&nbsp;&nbsp;&nbsp;&nbsp;}<br>&nbsp;&nbsp;}<br>}</code>
     </div>
     <ul class="prereqs">
       <li>Node.js 18+</li>
-      <li><a href="https://docs.anthropic.com/en/docs/claude-code" style="color: var(--purple-glow)">Claude Code</a></li>
       <li>Python 3 with edge-tts: <code>pip install edge-tts</code></li>
-      <li><code>ANTHROPIC_API_KEY</code> environment variable</li>
+      <li><code>ANTHROPIC_API_KEY</code> &mdash; <a href="https://console.anthropic.com/settings/keys" style="color: var(--purple-glow)">get one here</a></li>
     </ul>
   </section>
 
@@ -489,6 +491,33 @@
       <div class="lang-tag"><span class="flag">&#x1F1EC;&#x1F1E7;</span> English</div>
     </div>
     <p class="lang-note">Any language Claude knows can be coached &mdash; these have built-in voice support with auto-detection.</p>
+  </section>
+
+  <!-- Roadmap -->
+  <section>
+    <h2>Roadmap</h2>
+    <div class="features-grid">
+      <div class="feature">
+        <div class="feature-icon">&#x1F4E6;</div>
+        <h3>Remove Python dependency</h3>
+        <p>Bundle TTS natively so the only prereq is Node.js + an API key.</p>
+      </div>
+      <div class="feature">
+        <div class="feature-icon">&#x1F4AC;</div>
+        <h3>ChatGPT connector</h3>
+        <p>HTTP transport so konid works as a ChatGPT app, not just CLI tools.</p>
+      </div>
+      <div class="feature">
+        <div class="feature-icon">&#x1F4DA;</div>
+        <h3>Language plugins</h3>
+        <p>Idiom databases, formality registers, and culture-specific coaching per language.</p>
+      </div>
+      <div class="feature">
+        <div class="feature-icon">&#x2601;&#xFE0F;</div>
+        <h3>Hosted version</h3>
+        <p>No API key needed &mdash; just install and go.</p>
+      </div>
+    </div>
   </section>
 
   <!-- Footer -->

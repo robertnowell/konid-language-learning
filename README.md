@@ -4,6 +4,10 @@
 
 Your language expression wizard — an MCP server for Claude Code that coaches you on natural, socially-aware expression in any language.
 
+<p align="center">
+  <img src="docs/hero.gif" alt="Google Translate says 'estoy caliente' for 'I'm hot' — which actually means 'I'm horny' in Spanish" width="700">
+</p>
+
 This is not a translator. konid is an expression coach: tell it what you want to say, and it shows you how a native speaker would actually say it — with cultural context, tone notes, and audio you can play through your speakers.
 
 ## Quick Start

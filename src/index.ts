@@ -99,9 +99,9 @@ function resolveVoice(voice: string | undefined, targetLanguage: string): string
 // --- Auto-detect voice from text script ---
 
 function detectVoiceFromText(text: string): string {
-  // Check character ranges to guess the language
-  if (/[\u4e00-\u9fff]/.test(text)) return VOICE_MAP["zh-CN"];
+  // Japanese before Chinese: Japanese uses kana + kanji, Chinese uses only hanzi
   if (/[\u3040-\u309f\u30a0-\u30ff]/.test(text)) return VOICE_MAP["ja"];
+  if (/[\u4e00-\u9fff]/.test(text)) return VOICE_MAP["zh-CN"];
   if (/[\uac00-\ud7af\u1100-\u11ff]/.test(text)) return VOICE_MAP["ko"];
   if (/[\u0600-\u06ff]/.test(text)) return VOICE_MAP["ar"];
   if (/[\u0900-\u097f]/.test(text)) return VOICE_MAP["hi"];

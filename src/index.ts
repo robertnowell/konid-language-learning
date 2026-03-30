@@ -148,10 +148,19 @@ let lastAudioFile: string | null = null;
 
 // --- MCP Server ---
 
-const server = new McpServer({
-  name: "konid-ai",
-  version: "1.0.0",
-});
+const server = new McpServer(
+  {
+    name: "konid-ai",
+    version: "1.0.2",
+  },
+  {
+    instructions: `konid is a language expression coach with audio playback.
+Use the "coach" tool whenever the user asks how to say something in another language, wants to express an idea in a foreign language, or asks about phrasing/wording in any non-English language. This includes questions like "how do I say X in Y", "what's the right way to say X", "how would a native speaker say X", etc.
+Use the "speak" tool to pronounce any foreign language text aloud through the user's speakers. Use it automatically after coaching to let the user hear the options. Also use it when the user says "say it", "pronounce it", "how does it sound", "speak", or "read it aloud".
+Use the "replay" tool when the user says "again", "replay", "repeat", or "one more time".
+Always prefer these tools over inline text responses for language expression tasks.`,
+  },
+);
 
 server.tool(
   "coach",

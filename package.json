@@ -1,10 +1,10 @@
 {
-  "name": "kodin-ai",
+  "name": "konid-ai",
   "version": "1.0.0",
   "type": "module",
   "description": "Language expression wizard with audio — MCP server for Claude Code",
   "bin": {
-    "kodin-ai": "./dist/index.js"
+    "konid-ai": "./dist/index.js"
   },
   "files": [
     "dist"
@@ -26,9 +26,9 @@
   "author": "Robert Nowell",
   "repository": {
     "type": "git",
-    "url": "https://github.com/robertnowell/kodin-ai"
+    "url": "https://github.com/robertnowell/konid-ai"
   },
-  "homepage": "https://github.com/robertnowell/kodin-ai",
+  "homepage": "https://github.com/robertnowell/konid-ai",
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.12.0",
     "@anthropic-ai/sdk": "^0.39.0",

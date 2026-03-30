@@ -1,8 +1,8 @@
 {
   "mcpServers": {
-    "kodin": {
+    "konid": {
       "command": "npx",
-      "args": ["-y", "kodin-ai"],
+      "args": ["-y", "konid-ai"],
       "env": {
         "ANTHROPIC_API_KEY": "${user_config.ANTHROPIC_API_KEY}"
       }

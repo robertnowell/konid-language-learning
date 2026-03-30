@@ -1,8 +1,8 @@
-# kodin
+# konid
 
 Your language expression wizard — an MCP server for Claude Code that coaches you on natural, socially-aware expression in any language.
 
-This is not a translator. kodin is an expression coach: tell it what you want to say, and it shows you how a native speaker would actually say it — with cultural context, tone notes, and audio you can play through your speakers.
+This is not a translator. konid is an expression coach: tell it what you want to say, and it shows you how a native speaker would actually say it — with cultural context, tone notes, and audio you can play through your speakers.
 
 ## Quick Start
 
@@ -16,7 +16,7 @@ This is not a translator. kodin is an expression coach: tell it what you want to
 ### Install
 
 ```bash
-claude mcp add kodin-ai -- npx -y kodin-ai
+claude mcp add konid-ai -- npx -y konid-ai
 ```
 
 Or add to your `.mcp.json`:
@@ -24,9 +24,9 @@ Or add to your `.mcp.json`:
 ```json
 {
   "mcpServers": {
-    "kodin": {
+    "konid": {
       "command": "npx",
-      "args": ["-y", "kodin-ai"],
+      "args": ["-y", "konid-ai"],
       "env": {
         "ANTHROPIC_API_KEY": "your-key-here"
       }
@@ -39,7 +39,7 @@ Or add to your `.mcp.json`:
 
 **You:** "how do I say 'we'll see' in Chinese?"
 
-**kodin returns 3 options, casual to formal:**
+**konid returns 3 options, casual to formal:**
 
 1. **再说吧** (zai shuo ba) — casual, slightly evasive, can function as a soft "no"
 2. **看情况吧** (kan qingkuang ba) — "depends on the situation," genuinely open-minded
@@ -99,7 +99,7 @@ Any language Claude knows can be coached — the voice auto-detection covers the
 
 ## Audio Playback
 
-kodin plays audio through your system speakers automatically:
+konid plays audio through your system speakers automatically:
 
 - **macOS**: uses `afplay` (built-in)
 - **Linux**: tries `mpv`, `paplay`, `aplay` in order

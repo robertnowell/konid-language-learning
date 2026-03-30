@@ -1,12 +1,12 @@
 {
-  "name": "kodin-ai",
+  "name": "konid-ai",
   "version": "1.0.0",
   "description": "Language expression wizard — coaches you on natural, socially-aware expression in any language with audio playback",
   "author": {
     "name": "Robert Nowell",
     "url": "https://github.com/robertnowell"
   },
-  "homepage": "https://github.com/robertnowell/kodin-ai",
+  "homepage": "https://github.com/robertnowell/konid-ai",
   "keywords": ["language", "tts", "coaching", "mcp", "expression"],
   "license": "MIT",
   "userConfig": {

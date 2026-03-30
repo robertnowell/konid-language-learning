@@ -11,7 +11,8 @@ import { promisify } from "node:util";
 
 const execFileAsync = promisify(execFile);
 const anthropic = new Anthropic();
-const AUDIO_DIR = join(tmpdir(), "kodin-ai");
+const COACH_MODEL = process.env.KONID_MODEL ?? "claude-sonnet-4-6";
+const AUDIO_DIR = join(tmpdir(), "konid-ai");
 
 // --- Coaching prompt ---
 
@@ -93,6 +94,25 @@ function resolveVoice(voice: string | undefined, targetLanguage: string): string
   return VOICE_MAP["zh-CN"]; // default
 }
 
+// --- Auto-detect voice from text script ---
+
+function detectVoiceFromText(text: string): string {
+  // Check character ranges to guess the language
+  if (/[\u4e00-\u9fff]/.test(text)) return VOICE_MAP["zh-CN"];
+  if (/[\u3040-\u309f\u30a0-\u30ff]/.test(text)) return VOICE_MAP["ja"];
+  if (/[\uac00-\ud7af\u1100-\u11ff]/.test(text)) return VOICE_MAP["ko"];
+  if (/[\u0600-\u06ff]/.test(text)) return VOICE_MAP["ar"];
+  if (/[\u0900-\u097f]/.test(text)) return VOICE_MAP["hi"];
+  if (/[\u0400-\u04ff]/.test(text)) return VOICE_MAP["ru"];
+  // Latin scripts — check for diacritics/patterns
+  if (/[àâçéèêëîïôùûüÿœæ]/i.test(text)) return VOICE_MAP["fr"];
+  if (/[äöüß]/i.test(text)) return VOICE_MAP["de"];
+  if (/[ñ¿¡áéíóú]/i.test(text)) return VOICE_MAP["es"];
+  if (/[ãõçâê]/i.test(text)) return VOICE_MAP["pt"];
+  if (/[àèìòù]/i.test(text)) return VOICE_MAP["it"];
+  return VOICE_MAP["zh-CN"]; // default
+}
+
 // --- Cross-platform audio playback ---
 
 async function playAudio(filepath: string): Promise<void> {
@@ -127,7 +147,7 @@ let lastAudioFile: string | null = null;
 // --- MCP Server ---
 
 const server = new McpServer({
-  name: "kodin-ai",
+  name: "konid-ai",
   version: "1.0.0",
 });
 
@@ -151,7 +171,7 @@ server.tool(
       : `Idea: "${text}"`;
 
     const response = await anthropic.messages.create({
-      model: "claude-opus-4-6",
+      model: COACH_MODEL,
       max_tokens: 1024,
       system: buildCoachingPrompt(target_language),
       messages: [{ role: "user", content: userMessage }],
@@ -190,8 +210,8 @@ server.tool(
   async ({ text, meaning, slow, voice }) => {
     await mkdir(AUDIO_DIR, { recursive: true });
 
-    const resolvedVoice = voice ?? VOICE_MAP["zh-CN"];
-    const filepath = join(AUDIO_DIR, `kodin-${Date.now()}.mp3`);
+    const resolvedVoice = voice ?? detectVoiceFromText(text);
+    const filepath = join(AUDIO_DIR, `konid-${Date.now()}.mp3`);
 
     const args = [
       "--text", text,

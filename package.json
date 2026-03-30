@@ -1,6 +1,6 @@
 {
   "name": "konid-ai",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "type": "module",
   "description": "Language expression wizard with audio - MCP server for Claude Code",
   "bin": {

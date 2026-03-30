@@ -1,8 +1,8 @@
 {
   "name": "konid-ai",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "type": "module",
-  "description": "Language expression wizard with audio — MCP server for Claude Code",
+  "description": "Language expression wizard with audio - MCP server for Claude Code",
   "bin": {
     "konid-ai": "./dist/index.js"
   },
@@ -30,8 +30,9 @@
   },
   "homepage": "https://github.com/robertnowell/konid-ai",
   "dependencies": {
-    "@modelcontextprotocol/sdk": "^1.12.0",
     "@anthropic-ai/sdk": "^0.39.0",
+    "@modelcontextprotocol/sdk": "^1.12.0",
+    "node-edge-tts": "^1.2.10",
     "zod": "^3.23.8"
   },
   "devDependencies": {

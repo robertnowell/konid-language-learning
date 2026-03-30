@@ -8,6 +8,8 @@ import { join } from "node:path";
 import { tmpdir } from "node:os";
 import { execFile } from "node:child_process";
 import { promisify } from "node:util";
+// @ts-ignore - no type declarations
+import { EdgeTTS } from "node-edge-tts";
 
 const execFileAsync = promisify(execFile);
 const anthropic = new Anthropic();
@@ -29,7 +31,7 @@ Response format (follow exactly):
 
 1. [${targetLanguage} text] ([romanization])
    - Literal: [word-by-word gloss]
-   - Tone: [when/where to use this — casual, formal, flirty, professional, etc.]
+   - Tone: [when/where to use this - casual, formal, flirty, professional, etc.]
 
 2. [${targetLanguage} text] ([romanization])
    - Literal: [word-by-word gloss]
@@ -104,7 +106,7 @@ function detectVoiceFromText(text: string): string {
   if (/[\u0600-\u06ff]/.test(text)) return VOICE_MAP["ar"];
   if (/[\u0900-\u097f]/.test(text)) return VOICE_MAP["hi"];
   if (/[\u0400-\u04ff]/.test(text)) return VOICE_MAP["ru"];
-  // Latin scripts — check for diacritics/patterns
+  // Latin scripts - check for diacritics/patterns
   if (/[àâçéèêëîïôùûüÿœæ]/i.test(text)) return VOICE_MAP["fr"];
   if (/[äöüß]/i.test(text)) return VOICE_MAP["de"];
   if (/[ñ¿¡áéíóú]/i.test(text)) return VOICE_MAP["es"];
@@ -136,7 +138,7 @@ async function playAudio(filepath: string): Promise<void> {
       ]);
     }
   } catch {
-    // Silent failure — file path is in the response text
+    // Silent failure - file path is in the response text
   }
 }
 
@@ -213,25 +215,16 @@ server.tool(
     const resolvedVoice = voice ?? detectVoiceFromText(text);
     const filepath = join(AUDIO_DIR, `konid-${Date.now()}.mp3`);
 
-    const args = [
-      "--text", text,
-      "--voice", resolvedVoice,
-      "--write-media", filepath,
-    ];
-
-    if (slow) {
-      args.push("--rate", "-30%");
-    }
-
     try {
-      await execFileAsync("edge-tts", args);
+      const tts = new EdgeTTS({ voice: resolvedVoice, ...(slow ? { rate: "-30%" } : {}) });
+      await tts.ttsPromise(text, filepath);
     } catch (err) {
       const message = err instanceof Error ? err.message : String(err);
       return {
         content: [
           {
             type: "text" as const,
-            text: `Failed to generate audio. Is edge-tts installed? (pip install edge-tts)\n\nError: ${message}`,
+            text: `Failed to generate audio.\n\nError: ${message}`,
           },
         ],
       };
@@ -245,7 +238,7 @@ server.tool(
       content: [
         {
           type: "text" as const,
-          text: `Speaking: "${text}"${meaning ? ` — ${meaning}` : ""}\nVoice: ${resolvedVoice} | Speed: ${slow ? "slow" : "normal"}\nAudio: ${filepath}`,
+          text: `Speaking: "${text}"${meaning ? ` - ${meaning}` : ""}\nVoice: ${resolvedVoice} | Speed: ${slow ? "slow" : "normal"}\nAudio: ${filepath}`,
         },
       ],
     };
@@ -262,7 +255,7 @@ server.tool(
         content: [
           {
             type: "text" as const,
-            text: "Nothing to replay — use speak first.",
+            text: "Nothing to replay - use speak first.",
           },
         ],
       };

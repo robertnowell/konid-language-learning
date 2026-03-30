@@ -1,7 +1,7 @@
 {
   "name": "konid-ai",
   "version": "1.0.0",
-  "description": "Language expression wizard — coaches you on natural, socially-aware expression in any language with audio playback",
+  "description": "Language expression wizard - coaches you on natural, socially-aware expression in any language with audio playback",
   "author": {
     "name": "Robert Nowell",
     "url": "https://github.com/robertnowell"

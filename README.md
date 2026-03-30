@@ -1,22 +1,21 @@
 # konid
 
-*konid* (کنید) — Farsi for "do." Take action.
+*konid* (کنید) - Farsi for "do." Take action.
 
-Your language expression wizard — an MCP server for Claude Code that coaches you on natural, socially-aware expression in any language.
+Your language expression wizard. An MCP server for Claude Code that coaches you on natural, socially-aware expression in any language.
 
 <p align="center">
-  <img src="docs/hero.gif" alt="Google Translate says 'estoy caliente' for 'I'm hot' — which actually means 'I'm horny' in Spanish" width="700">
+  <img src="docs/hero.gif" alt="Google Translate says 'estoy caliente' for 'I'm hot', which actually means 'I'm horny' in Spanish" width="700">
 </p>
 
-This is not a translator. konid is an expression coach: tell it what you want to say, and it shows you how a native speaker would actually say it — with cultural context, tone notes, and audio you can play through your speakers.
+This is not a translator. konid is an expression coach: tell it what you want to say, and it shows you how a native speaker would actually say it, with cultural context, tone notes, and audio you can play through your speakers.
 
 ## Quick Start
 
 ### Prerequisites
 
-- [Claude Code](https://docs.anthropic.com/en/docs/claude-code) (or any MCP-compatible client — see below)
+- [Claude Code](https://docs.anthropic.com/en/docs/claude-code) (or any MCP-compatible client, see below)
 - Node.js 18+
-- Python 3 with edge-tts: `pip install edge-tts`
 - `ANTHROPIC_API_KEY` environment variable set ([get one here](https://console.anthropic.com/settings/keys))
 
 ### Install
@@ -33,9 +32,9 @@ That's it. Start a new Claude Code session and ask something like *"how do I say
 
 **konid returns 3 options, casual to formal:**
 
-1. **再说吧** (zài shuō ba) — casual, slightly evasive, can function as a soft "no"
-2. **看情况吧** (kàn qíngkuàng ba) — "depends on the situation," genuinely open-minded
-3. **到时候再看吧** (dào shíhou zài kàn ba) — "let's wait and see," most neutral
+1. **再说吧** (zài shuō ba) - casual, slightly evasive, can function as a soft "no"
+2. **看情况吧** (kàn qíngkuàng ba) - "depends on the situation," genuinely open-minded
+3. **到时候再看吧** (dào shíhou zài kàn ba) - "let's wait and see," most neutral
 
 Plus cultural context: "再说吧 is frequently used as a polite way to decline without directly saying no."
 
@@ -143,7 +142,7 @@ Speak text aloud using text-to-speech. Generates audio and plays it through your
 |-----------|-------------|---------|
 | `text` | Text to speak (in the target language) | required |
 | `slow` | Slower pace for clearer pronunciation | false |
-| `voice` | edge-tts voice name (override auto-detection) | auto-detected |
+| `voice` | Edge TTS voice name (override auto-detection) | auto-detected |
 
 ### replay
 
@@ -167,13 +166,13 @@ Replay the last spoken audio clip.
 | Hindi | hi-IN-MadhurNeural |
 | English | en-US-GuyNeural |
 
-Any language Claude knows can be coached — the voice auto-detection covers the above, and you can pass a specific `voice` parameter for others.
+Any language Claude knows can be coached. The voice auto-detection covers the above, and you can pass a specific `voice` parameter for others.
 
 ## Configuration
 
 | Environment Variable | Description | Default |
 |---------------------|-------------|---------|
-| `ANTHROPIC_API_KEY` | Your Anthropic API key (required) | — |
+| `ANTHROPIC_API_KEY` | Your Anthropic API key (required) | - |
 | `KONID_MODEL` | Claude model for coaching | `claude-sonnet-4-6` |
 
 ## Audio Playback
@@ -188,7 +187,7 @@ If no audio player is available, the file path is included in the response so yo
 
 ## Roadmap
 
-- [ ] Remove Python/edge-tts dependency (bundle TTS natively)
+- [x] Remove Python/edge-tts dependency (TTS bundled natively)
 - [ ] ChatGPT connector (requires HTTP transport)
 - [ ] MCP Registry listing
 - [ ] Language-specific coaching plugins (idiom databases, formality registers)

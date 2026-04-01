@@ -7,12 +7,20 @@
     "konid-ai": "./dist/index.js"
   },
   "files": [
-    "dist"
+    "dist",
+    "chatgpt-app/public",
+    "skills",
+    ".claude-plugin",
+    ".mcp.json"
   ],
   "scripts": {
     "build": "tsc",
     "start": "node dist/index.js",
+    "start:remote": "KONID_REMOTE=1 node dist/index.js",
     "dev": "tsx src/index.ts",
+    "dev:remote": "KONID_REMOTE=1 tsx src/index.ts",
+    "test": "vitest run",
+    "test:watch": "vitest",
     "prepublishOnly": "npm run build"
   },
   "keywords": [
@@ -38,6 +46,7 @@
   "devDependencies": {
     "@types/node": "^22.0.0",
     "tsx": "^4.19.2",
-    "typescript": "^5.6.3"
+    "typescript": "^5.6.3",
+    "vitest": "^4.1.2"
   }
 }

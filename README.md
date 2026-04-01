@@ -122,6 +122,52 @@ Add to `settings.json`:
 
 Settings > Tools > AI Assistant > MCP Servers > Add > command: `npx`, args: `-y konid-ai`
 
+### Claude Cowork
+
+> Cowork is available in the Claude desktop app for Pro and Max subscribers.
+
+<a href="https://www.loom.com/share/9ae0d46f7c6d4a6caa2847351aa18ae8">
+  <img src="https://cdn.loom.com/sessions/thumbnails/9ae0d46f7c6d4a6caa2847351aa18ae8-with-play.gif" alt="konid Cowork setup video" width="400">
+</a>
+
+Install konid as a Cowork plugin — no Node.js or API key required.
+
+1. Download [`konid-ai-plugin.zip`](docs/konid-ai-plugin.zip)
+2. In Cowork, click **Customize** in the left sidebar
+3. Click the **+** next to "Personal plugins"
+4. Select **Create plugin** > **Upload plugin**
+5. Choose the `konid-ai-plugin.zip` file
+
+<p align="center">
+  <img src="docs/cowork-upload.png" alt="Cowork plugin upload: Customize > + > Create plugin > Upload plugin" width="600">
+</p>
+
+Once installed, start a new task and ask something like *"how do I say 'nice to meet you' in Japanese?"* — konid will coach you with 3 options and provide a link to hear the pronunciation.
+
+**Audio:** Cowork's sandbox doesn't support inline audio playback. The `speak` tool returns a clickable link to hear the pronunciation in your browser.
+
+**Alternative (local, with audio playback):** If you have Node.js installed, you can add konid as a local MCP server in `claude_desktop_config.json` instead. This plays audio directly through your speakers:
+
+```json
+{
+  "mcpServers": {
+    "konid-ai": {
+      "command": "npx",
+      "args": ["-y", "konid-ai"],
+      "env": {
+        "ANTHROPIC_API_KEY": "sk-ant-..."
+      }
+    }
+  }
+}
+```
+
+### ChatGPT
+
+Connect the remote MCP server in Developer Mode:
+
+Settings > Apps > Advanced settings > Developer mode > add `https://konid.fly.dev/mcp`
+
 ## Tools
 
 ### coach
@@ -185,10 +231,33 @@ konid plays audio through your system speakers automatically:
 
 If no audio player is available, the file path is included in the response so you can open it manually.
 
+## Remote Server
+
+konid can run as a remote HTTP server for web-based clients (ChatGPT, Claude Cowork remote, etc.):
+
+```bash
+# Start remote server
+KONID_REMOTE=1 KONID_BASE_URL=https://konid.fly.dev ANTHROPIC_API_KEY=sk-ant-... node dist/index.js
+
+# Or with pnpm
+pnpm start:remote
+```
+
+| Environment Variable | Description | Default |
+|---------------------|-------------|---------|
+| `KONID_REMOTE` | Set to `1` to start HTTP server instead of stdio | - |
+| `KONID_BASE_URL` | Public URL for audio file links | `http://localhost:3000` |
+| `PORT` | HTTP server port | `3000` |
+
+The remote server exposes:
+- `POST /mcp` — MCP Streamable HTTP endpoint
+- `GET /audio/:file` — Generated audio files
+- `GET /health` — Health check
+
 ## Roadmap
 
 - [x] Remove Python/edge-tts dependency (TTS bundled natively)
-- [ ] ChatGPT connector (requires HTTP transport)
+- [x] Remote HTTP server + ChatGPT App
 - [ ] MCP Registry listing
 - [ ] Language-specific coaching plugins (idiom databases, formality registers)
 - [ ] Hosted version (no API key needed)

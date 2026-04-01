@@ -1,18 +1,12 @@
 {
   "name": "konid-ai",
-  "version": "1.0.0",
-  "description": "Language expression wizard - coaches you on natural, socially-aware expression in any language with audio playback",
+  "version": "1.2.0",
+  "description": "Language expression coach — tells you how a native speaker would actually say something, with cultural context, tone notes, and audio pronunciation. Supports 13+ languages.",
   "author": {
     "name": "Robert Nowell",
     "url": "https://github.com/robertnowell"
   },
   "homepage": "https://github.com/robertnowell/konid-ai",
-  "keywords": ["language", "tts", "coaching", "mcp", "expression"],
-  "license": "MIT",
-  "userConfig": {
-    "ANTHROPIC_API_KEY": {
-      "description": "Your Anthropic API key for language coaching",
-      "sensitive": true
-    }
-  }
+  "keywords": ["language", "tts", "coaching", "mcp", "expression", "pronunciation"],
+  "license": "MIT"
 }

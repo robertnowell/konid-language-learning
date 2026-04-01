@@ -1,0 +1,15 @@
+{
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "speak",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "jq -r '.tool_result.content[0].text // empty' | grep -oE 'https://[^ ]+\\.mp3' | head -1 | while read url; do curl -s \"$url\" -o /tmp/konid-audio.mp3 && afplay /tmp/konid-audio.mp3 & done"
+          }
+        ]
+      }
+    ]
+  }
+}

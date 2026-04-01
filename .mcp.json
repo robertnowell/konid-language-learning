@@ -1,11 +1,7 @@
 {
   "mcpServers": {
-    "konid": {
-      "command": "npx",
-      "args": ["-y", "konid-ai"],
-      "env": {
-        "ANTHROPIC_API_KEY": "${user_config.ANTHROPIC_API_KEY}"
-      }
+    "konid-language-coach": {
+      "url": "https://konid.fly.dev/mcp"
     }
   }
 }

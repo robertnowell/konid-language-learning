@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>konid audio player</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: transparent;
+      padding: 12px;
+      color: #1a1a1a;
+    }
+    .player {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      background: #f7f7f8;
+      border-radius: 12px;
+      padding: 16px;
+      border: 1px solid #e5e5e5;
+    }
+    .player-header {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 14px;
+    }
+    .player-icon {
+      width: 24px;
+      height: 24px;
+      background: #10a37f;
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 12px;
+      flex-shrink: 0;
+    }
+    .player-text {
+      font-weight: 500;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .player-meaning {
+      font-size: 13px;
+      color: #666;
+      margin-left: 32px;
+    }
+    .player-meta {
+      font-size: 12px;
+      color: #999;
+      margin-left: 32px;
+    }
+    audio {
+      width: 100%;
+      height: 36px;
+      border-radius: 8px;
+    }
+    audio::-webkit-media-controls-panel {
+      background: #eee;
+    }
+    .empty {
+      text-align: center;
+      color: #999;
+      font-size: 13px;
+      padding: 20px;
+    }
+    @media (prefers-color-scheme: dark) {
+      body { color: #e5e5e5; }
+      .player { background: #2a2a2a; border-color: #444; }
+      .player-meaning { color: #aaa; }
+      .player-meta { color: #777; }
+      audio::-webkit-media-controls-panel { background: #333; }
+    }
+  </style>
+</head>
+<body>
+  <div id="root">
+    <div class="empty">Waiting for audio...</div>
+  </div>
+  <script>
+    const root = document.getElementById('root');
+
+    function renderPlayer(data) {
+      const { text, meaning, voice, speed, audioUrl } = data;
+      root.innerHTML = `
+        <div class="player">
+          <div class="player-header">
+            <div class="player-icon">&#9835;</div>
+            <div class="player-text">${escapeHtml(text)}</div>
+          </div>
+          ${meaning ? `<div class="player-meaning">${escapeHtml(meaning)}</div>` : ''}
+          <audio controls autoplay src="${escapeHtml(audioUrl)}"></audio>
+          <div class="player-meta">${escapeHtml(voice)} &middot; ${escapeHtml(speed)}</div>
+        </div>
+      `;
+    }
+
+    function escapeHtml(str) {
+      const div = document.createElement('div');
+      div.textContent = str;
+      return div.innerHTML;
+    }
+
+    // Listen for tool results from ChatGPT Apps bridge
+    window.addEventListener('message', (event) => {
+      try {
+        const msg = event.data;
+
+        // Handle tool result notifications
+        if (msg?.type === 'ui/notifications/tool-result') {
+          const content = msg?.result?.structuredContent || msg?.result?.content;
+          if (content?.audioUrl) {
+            renderPlayer(content);
+          }
+        }
+
+        // Handle direct data messages
+        if (msg?.type === 'konid:audio' && msg?.data?.audioUrl) {
+          renderPlayer(msg.data);
+        }
+      } catch {
+        // Ignore malformed messages
+      }
+    });
+
+    // Signal ready
+    window.parent?.postMessage({ type: 'ui/ready' }, '*');
+  </script>
+</body>
+</html>

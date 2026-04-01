@@ -126,9 +126,7 @@ Settings > Tools > AI Assistant > MCP Servers > Add > command: `npx`, args: `-y 
 
 > Cowork is available in the Claude desktop app for Pro and Max subscribers.
 
-<a href="https://www.loom.com/share/9ae0d46f7c6d4a6caa2847351aa18ae8">
-  <img src="https://cdn.loom.com/sessions/thumbnails/9ae0d46f7c6d4a6caa2847351aa18ae8-with-play.gif" alt="konid Cowork setup video" width="400">
-</a>
+[Watch the setup video](https://www.loom.com/share/9ae0d46f7c6d4a6caa2847351aa18ae8)
 
 Install konid as a Cowork plugin — no Node.js or API key required.
 

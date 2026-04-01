@@ -14,7 +14,9 @@ A language expression coach. Tell it what you want to say, and it shows you how 
 
 > Requires a Pro or Max subscription.
 
-[Watch the setup video](https://www.loom.com/share/9ae0d46f7c6d4a6caa2847351aa18ae8)
+<a href="https://www.loom.com/share/9ae0d46f7c6d4a6caa2847351aa18ae8">
+  <img src="docs/cowork-demo.png" alt="Watch the setup video" width="500">
+</a>
 
 1. Download [`konid-ai-plugin.zip`](docs/konid-ai-plugin.zip)
 2. In Cowork, click **Customize** in the left sidebar

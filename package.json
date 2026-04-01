@@ -34,9 +34,9 @@
   "author": "Robert Nowell",
   "repository": {
     "type": "git",
-    "url": "https://github.com/robertnowell/konid-ai"
+    "url": "https://github.com/robertnowell/konid-language-learning"
   },
-  "homepage": "https://github.com/robertnowell/konid-ai",
+  "homepage": "https://github.com/robertnowell/konid-language-learning",
   "dependencies": {
     "@anthropic-ai/sdk": "^0.39.0",
     "@modelcontextprotocol/sdk": "^1.12.0",

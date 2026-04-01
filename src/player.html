@@ -3,193 +3,252 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>konid — {{TEXT}}</title>
+  <title>{{TEXT}} — konid</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:wght@400;600&family=Inter:wght@400;500&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Outfit:wght@300;400;500&display=swap" rel="stylesheet">
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
 
     body {
-      font-family: 'Inter', system-ui, sans-serif;
-      background: #1a1520;
-      color: #e8e0f0;
+      font-family: 'Outfit', sans-serif;
+      font-weight: 300;
+      background: #f4f1eb;
+      color: #2c2825;
       min-height: 100vh;
       display: flex;
-      align-items: center;
-      justify-content: center;
+      flex-direction: column;
+      position: relative;
+      overflow-x: hidden;
     }
 
-    .card {
-      background: #231e2e;
-      border: 1px solid #3a3148;
-      border-radius: 20px;
-      padding: 3rem 2.5rem;
-      max-width: 420px;
-      width: 90%;
+    /* Subtle paper texture */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg width='200' height='200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .page {
+      position: relative;
+      z-index: 1;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 3rem 2rem;
+      max-width: 640px;
+      margin: 0 auto;
+      width: 100%;
+    }
+
+    /* Brand mark */
+    .mark {
+      font-family: 'DM Serif Display', Georgia, serif;
+      font-size: 0.8rem;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      color: #9e9589;
+      margin-bottom: 4rem;
+    }
+
+    .mark a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    .mark a:hover {
+      color: #6b6560;
+    }
+
+    /* The word — hero */
+    .word {
+      font-size: clamp(3.5rem, 12vw, 7rem);
+      font-weight: 400;
+      line-height: 1.1;
+      text-align: center;
+      letter-spacing: 0.02em;
+      margin-bottom: 1.2rem;
+      color: #1a1715;
+    }
+
+    /* Translation */
+    .translation {
+      font-family: 'DM Serif Display', Georgia, serif;
+      font-style: italic;
+      font-size: 1.3rem;
+      color: #7a736b;
+      margin-bottom: 0.5rem;
       text-align: center;
     }
 
-    .brand {
-      font-family: 'Crimson Pro', Georgia, serif;
-      font-size: 0.85rem;
-      color: #8a7a9e;
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
-      margin-bottom: 2rem;
+    .meta {
+      font-size: 0.75rem;
+      color: #b5aea6;
+      letter-spacing: 0.05em;
+      margin-bottom: 4rem;
+      text-align: center;
     }
 
-    .text {
-      font-family: 'Crimson Pro', Georgia, serif;
-      font-size: 2.8rem;
-      font-weight: 600;
-      color: #fff;
-      line-height: 1.2;
-      margin-bottom: 0.5rem;
+    /* Player bar */
+    .player {
+      width: 100%;
+      max-width: 360px;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin-bottom: 1.5rem;
     }
 
-    .meaning {
-      font-size: 1.05rem;
-      color: #a99bbe;
-      margin-bottom: 0.4rem;
-    }
-
-    .voice {
-      font-size: 0.8rem;
-      color: #5e5270;
-      margin-bottom: 2.5rem;
-    }
-
-    .player-ring {
-      width: 100px;
-      height: 100px;
+    .play-btn {
+      width: 48px;
+      height: 48px;
       border-radius: 50%;
-      border: 3px solid #d4a843;
+      border: 1.5px solid #c4bdb4;
+      background: transparent;
+      cursor: pointer;
       display: flex;
       align-items: center;
       justify-content: center;
-      margin: 0 auto 1.5rem;
-      cursor: pointer;
+      flex-shrink: 0;
       transition: all 0.2s;
-      background: transparent;
     }
 
-    .player-ring:hover {
-      background: rgba(212, 168, 67, 0.08);
-      transform: scale(1.05);
+    .play-btn:hover {
+      border-color: #8b8379;
+      background: rgba(0,0,0,0.02);
     }
 
-    .player-ring.playing {
-      border-color: #7ec89b;
-      animation: pulse 1.5s ease-in-out infinite;
+    .play-btn svg {
+      width: 18px;
+      height: 18px;
+      fill: #6b6560;
+      margin-left: 2px;
     }
 
-    @keyframes pulse {
-      0%, 100% { box-shadow: 0 0 0 0 rgba(126, 200, 155, 0.3); }
-      50% { box-shadow: 0 0 0 12px rgba(126, 200, 155, 0); }
+    .play-btn.playing svg { margin-left: 0; }
+    .play-btn .icon-pause { display: none; }
+    .play-btn.playing .icon-play { display: none; }
+    .play-btn.playing .icon-pause { display: block; }
+
+    .play-btn.playing {
+      border-color: #c0522e;
+      background: #c0522e;
     }
 
-    .play-icon svg {
-      width: 32px;
-      height: 32px;
-      margin-left: 3px;
+    .play-btn.playing svg {
+      fill: #f4f1eb;
     }
 
-    .play-icon .icon-pause { display: none; }
-    .player-ring.playing .play-icon .icon-play { display: none; }
-    .player-ring.playing .play-icon .icon-pause { display: block; margin-left: -3px; }
+    .track {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
 
-    .progress-bar {
+    .progress {
       width: 100%;
-      height: 4px;
-      background: #3a3148;
-      border-radius: 2px;
-      margin-bottom: 0.5rem;
-      overflow: hidden;
+      height: 2px;
+      background: #ddd8d1;
+      border-radius: 1px;
       cursor: pointer;
+      position: relative;
     }
 
     .progress-fill {
+      position: absolute;
+      top: 0;
+      left: 0;
       height: 100%;
-      background: linear-gradient(90deg, #d4a843, #f0d68a);
-      border-radius: 2px;
+      background: #c0522e;
+      border-radius: 1px;
       width: 0%;
       transition: width 0.1s linear;
     }
 
     .time {
-      font-size: 0.75rem;
-      color: #5e5270;
-      margin-bottom: 2rem;
+      font-size: 0.7rem;
+      color: #b5aea6;
+      font-variant-numeric: tabular-nums;
     }
 
-    .actions {
-      display: flex;
-      gap: 0.75rem;
-      justify-content: center;
-    }
-
-    .btn {
-      background: #2e2840;
-      border: 1px solid #3a3148;
-      color: #a99bbe;
-      padding: 0.5rem 1.2rem;
-      border-radius: 8px;
-      font-size: 0.85rem;
-      cursor: pointer;
-      transition: all 0.15s;
-      font-family: inherit;
+    /* Download */
+    .download {
+      font-size: 0.8rem;
+      color: #9e9589;
       text-decoration: none;
-      display: inline-block;
+      border-bottom: 1px solid transparent;
+      transition: all 0.15s;
+      margin-bottom: 4rem;
     }
 
-    .btn:hover {
-      background: #3a3148;
-      color: #e8e0f0;
+    .download:hover {
+      color: #6b6560;
+      border-bottom-color: #6b6560;
     }
 
+    /* Decorative line */
+    .rule {
+      width: 40px;
+      height: 1px;
+      background: #d4cfc8;
+      margin-bottom: 1.5rem;
+    }
+
+    /* Footer */
     .footer {
-      margin-top: 2.5rem;
-      padding-top: 1.5rem;
-      border-top: 1px solid #2e2840;
+      font-size: 0.7rem;
+      color: #b5aea6;
+      text-align: center;
     }
 
     .footer a {
-      color: #d4a843;
+      color: #9e9589;
       text-decoration: none;
-      font-size: 0.85rem;
     }
 
     .footer a:hover {
-      text-decoration: underline;
+      color: #6b6560;
+    }
+
+    @media (max-width: 480px) {
+      .page { padding: 2rem 1.5rem; }
+      .mark { margin-bottom: 3rem; }
+      .meta { margin-bottom: 3rem; }
     }
   </style>
 </head>
 <body>
-  <div class="card">
-    <div class="brand">konid</div>
+  <div class="page">
+    <div class="mark"><a href="https://github.com/robertnowell/konid-language-learning">konid</a></div>
 
-    <div class="text">{{TEXT}}</div>
-    <div class="meaning">{{MEANING}}</div>
-    <div class="voice">{{VOICE}} · {{SPEED}}</div>
+    <div class="word">{{TEXT}}</div>
+    <div class="translation">{{MEANING}}</div>
+    <div class="meta">{{VOICE}} · {{SPEED}}</div>
 
-    <div class="player-ring" id="playBtn">
-      <div class="play-icon">
-        <svg class="icon-play" viewBox="0 0 24 24" fill="#d4a843"><polygon points="6,3 20,12 6,21"/></svg>
-        <svg class="icon-pause" viewBox="0 0 24 24" fill="#7ec89b"><rect x="5" y="3" width="4" height="18"/><rect x="15" y="3" width="4" height="18"/></svg>
+    <div class="player">
+      <button class="play-btn" id="playBtn">
+        <svg class="icon-play" viewBox="0 0 24 24"><polygon points="6,3 20,12 6,21"/></svg>
+        <svg class="icon-pause" viewBox="0 0 24 24"><rect x="5" y="3" width="4" height="18"/><rect x="15" y="3" width="4" height="18"/></svg>
+      </button>
+      <div class="track">
+        <div class="progress" id="progressBar">
+          <div class="progress-fill" id="progressFill"></div>
+        </div>
+        <div class="time" id="time">0:00</div>
       </div>
     </div>
 
-    <div class="progress-bar" id="progressBar">
-      <div class="progress-fill" id="progressFill"></div>
-    </div>
-    <div class="time" id="time">0:00 / 0:00</div>
+    <a class="download" href="{{AUDIO_URL}}" download>download mp3</a>
 
-    <div class="actions">
-      <a class="btn" href="{{AUDIO_URL}}" download>Download MP3</a>
-    </div>
+    <div class="rule"></div>
 
     <div class="footer">
-      <a href="https://github.com/robertnowell/konid-language-learning">github.com/robertnowell/konid-language-learning</a>
+      <a href="https://github.com/robertnowell/konid-language-learning">language expression coach</a>
     </div>
   </div>
 
@@ -237,7 +296,6 @@
       }
     });
 
-    // Auto-play on load
     audio.play().then(() => playBtn.classList.add('playing')).catch(() => {});
   </script>
 </body>

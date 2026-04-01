@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>konid — {{TEXT}}</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:wght@400;600&family=Inter:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Inter', system-ui, sans-serif;
+      background: #1a1520;
+      color: #e8e0f0;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .card {
+      background: #231e2e;
+      border: 1px solid #3a3148;
+      border-radius: 20px;
+      padding: 3rem 2.5rem;
+      max-width: 420px;
+      width: 90%;
+      text-align: center;
+    }
+
+    .brand {
+      font-family: 'Crimson Pro', Georgia, serif;
+      font-size: 0.85rem;
+      color: #8a7a9e;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      margin-bottom: 2rem;
+    }
+
+    .text {
+      font-family: 'Crimson Pro', Georgia, serif;
+      font-size: 2.8rem;
+      font-weight: 600;
+      color: #fff;
+      line-height: 1.2;
+      margin-bottom: 0.5rem;
+    }
+
+    .meaning {
+      font-size: 1.05rem;
+      color: #a99bbe;
+      margin-bottom: 0.4rem;
+    }
+
+    .voice {
+      font-size: 0.8rem;
+      color: #5e5270;
+      margin-bottom: 2.5rem;
+    }
+
+    .player-ring {
+      width: 100px;
+      height: 100px;
+      border-radius: 50%;
+      border: 3px solid #d4a843;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 1.5rem;
+      cursor: pointer;
+      transition: all 0.2s;
+      background: transparent;
+    }
+
+    .player-ring:hover {
+      background: rgba(212, 168, 67, 0.08);
+      transform: scale(1.05);
+    }
+
+    .player-ring.playing {
+      border-color: #7ec89b;
+      animation: pulse 1.5s ease-in-out infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { box-shadow: 0 0 0 0 rgba(126, 200, 155, 0.3); }
+      50% { box-shadow: 0 0 0 12px rgba(126, 200, 155, 0); }
+    }
+
+    .play-icon {
+      width: 0;
+      height: 0;
+      border-style: solid;
+      border-width: 16px 0 16px 28px;
+      border-color: transparent transparent transparent #d4a843;
+      margin-left: 4px;
+      transition: border-color 0.2s;
+    }
+
+    .player-ring.playing .play-icon {
+      border-width: 0 10px;
+      border-color: transparent #7ec89b;
+      height: 28px;
+      width: 0;
+      margin-left: 0;
+    }
+
+    .progress-bar {
+      width: 100%;
+      height: 4px;
+      background: #3a3148;
+      border-radius: 2px;
+      margin-bottom: 0.5rem;
+      overflow: hidden;
+      cursor: pointer;
+    }
+
+    .progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #d4a843, #f0d68a);
+      border-radius: 2px;
+      width: 0%;
+      transition: width 0.1s linear;
+    }
+
+    .time {
+      font-size: 0.75rem;
+      color: #5e5270;
+      margin-bottom: 2rem;
+    }
+
+    .actions {
+      display: flex;
+      gap: 0.75rem;
+      justify-content: center;
+    }
+
+    .btn {
+      background: #2e2840;
+      border: 1px solid #3a3148;
+      color: #a99bbe;
+      padding: 0.5rem 1.2rem;
+      border-radius: 8px;
+      font-size: 0.85rem;
+      cursor: pointer;
+      transition: all 0.15s;
+      font-family: inherit;
+      text-decoration: none;
+      display: inline-block;
+    }
+
+    .btn:hover {
+      background: #3a3148;
+      color: #e8e0f0;
+    }
+
+    .footer {
+      margin-top: 2.5rem;
+      padding-top: 1.5rem;
+      border-top: 1px solid #2e2840;
+    }
+
+    .footer a {
+      color: #d4a843;
+      text-decoration: none;
+      font-size: 0.85rem;
+    }
+
+    .footer a:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <div class="brand">konid</div>
+
+    <div class="text">{{TEXT}}</div>
+    <div class="meaning">{{MEANING}}</div>
+    <div class="voice">{{VOICE}} · {{SPEED}}</div>
+
+    <div class="player-ring" id="playBtn">
+      <div class="play-icon" id="playIcon"></div>
+    </div>
+
+    <div class="progress-bar" id="progressBar">
+      <div class="progress-fill" id="progressFill"></div>
+    </div>
+    <div class="time" id="time">0:00 / 0:00</div>
+
+    <div class="actions">
+      <a class="btn" href="{{AUDIO_URL}}" download>Download MP3</a>
+    </div>
+
+    <div class="footer">
+      <a href="https://github.com/robertnowell/konid-language-learning">github.com/robertnowell/konid-language-learning</a>
+    </div>
+  </div>
+
+  <audio id="audio" src="{{AUDIO_URL}}" preload="auto"></audio>
+
+  <script>
+    const audio = document.getElementById('audio');
+    const playBtn = document.getElementById('playBtn');
+    const progressFill = document.getElementById('progressFill');
+    const progressBar = document.getElementById('progressBar');
+    const timeEl = document.getElementById('time');
+
+    function fmt(s) {
+      const m = Math.floor(s / 60);
+      const sec = Math.floor(s % 60);
+      return m + ':' + (sec < 10 ? '0' : '') + sec;
+    }
+
+    playBtn.addEventListener('click', () => {
+      if (audio.paused) {
+        audio.play();
+        playBtn.classList.add('playing');
+      } else {
+        audio.pause();
+        playBtn.classList.remove('playing');
+      }
+    });
+
+    audio.addEventListener('timeupdate', () => {
+      if (audio.duration) {
+        progressFill.style.width = (audio.currentTime / audio.duration * 100) + '%';
+        timeEl.textContent = fmt(audio.currentTime) + ' / ' + fmt(audio.duration);
+      }
+    });
+
+    audio.addEventListener('ended', () => {
+      playBtn.classList.remove('playing');
+      progressFill.style.width = '0%';
+    });
+
+    progressBar.addEventListener('click', (e) => {
+      if (audio.duration) {
+        const rect = progressBar.getBoundingClientRect();
+        audio.currentTime = ((e.clientX - rect.left) / rect.width) * audio.duration;
+      }
+    });
+
+    // Auto-play on load
+    audio.play().then(() => playBtn.classList.add('playing')).catch(() => {});
+  </script>
+</body>
+</html>

@@ -106,11 +106,13 @@ function createMcpServer(): McpServer {
         const filename = basename(filepath);
         const audioUrl = `${BASE_URL}/audio/${filename}`;
         const speed = slow ? "slow" : "normal";
+        const id = filename.replace(".mp3", "");
+        const playUrl = `${BASE_URL}/play/${id}?text=${encodeURIComponent(text)}&meaning=${encodeURIComponent(meaning ?? "")}&voice=${encodeURIComponent(resolvedVoice)}&speed=${speed}`;
 
         return {
           content: [{
             type: "text" as const,
-            text: `Speaking: "${text}"${meaning ? ` - ${meaning}` : ""}\nVoice: ${resolvedVoice} | Speed: ${speed}\n\n[Listen to pronunciation](${audioUrl})`,
+            text: `Speaking: "${text}"${meaning ? ` - ${meaning}` : ""}\nVoice: ${resolvedVoice} | Speed: ${speed}\n\n[Listen to pronunciation](${playUrl})`,
           }],
         };
       } catch (err) {
@@ -259,6 +261,45 @@ async function handleAudio(req: IncomingMessage, res: ServerResponse) {
   }
 }
 
+async function handlePlay(req: IncomingMessage, res: ServerResponse) {
+  const url = new URL(req.url ?? "/", `http://${req.headers.host}`);
+  const id = url.pathname.replace("/play/", "");
+
+  // Sanitize
+  if (!/^konid-\d+$/.test(id)) {
+    res.writeHead(404);
+    res.end("Not found");
+    return;
+  }
+
+  const text = url.searchParams.get("text") ?? "";
+  const meaning = url.searchParams.get("meaning") ?? "";
+  const voice = url.searchParams.get("voice") ?? "";
+  const speed = url.searchParams.get("speed") ?? "normal";
+  const audioUrl = `${BASE_URL}/audio/${id}.mp3`;
+
+  // In dev: src/player.html, in prod: dist/../src/player.html
+  const templatePath = join(__dirname, "..", "src", "player.html");
+  try {
+    let html = await readFile(templatePath, "utf-8");
+    html = html
+      .replaceAll("{{TEXT}}", text.replace(/"/g, "&quot;").replace(/</g, "&lt;"))
+      .replaceAll("{{MEANING}}", meaning.replace(/</g, "&lt;"))
+      .replaceAll("{{VOICE}}", voice.replace(/</g, "&lt;"))
+      .replaceAll("{{SPEED}}", speed)
+      .replaceAll("{{AUDIO_URL}}", audioUrl);
+
+    res.writeHead(200, {
+      "Content-Type": "text/html",
+      "Access-Control-Allow-Origin": "*",
+    });
+    res.end(html);
+  } catch {
+    res.writeHead(500);
+    res.end("Player template not found");
+  }
+}
+
 async function handleWidget(_req: IncomingMessage, res: ServerResponse) {
   const widgetPath = join(__dirname, "..", "chatgpt-app", "public", "audio-player.html");
   try {
@@ -301,6 +342,8 @@ const httpServer = createServer(async (req, res) => {
     await handleSSE(req, res);
   } else if (url.startsWith("/message") && req.method === "POST") {
     await handleMessage(req, res);
+  } else if (url.startsWith("/play/")) {
+    await handlePlay(req, res);
   } else if (url.startsWith("/audio/")) {
     await handleAudio(req, res);
   } else if (url === "/widget/audio-player.html") {

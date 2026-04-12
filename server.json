@@ -1,0 +1,12 @@
+{
+  "name": "io.github.robertnowell/konid",
+  "description": "Language expression coach that returns three translation options per phrase (casual, standard, formal) with register context and audio pronunciation. 13+ languages.",
+  "version": "1.0.4",
+  "packages": [
+    {
+      "registry_type": "npm",
+      "identifier": "konid-ai",
+      "version": "1.0.4"
+    }
+  ]
+}

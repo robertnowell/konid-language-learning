@@ -1,6 +1,7 @@
 {
   "mcpServers": {
     "konid-language-coach": {
+      "type": "http",
       "url": "https://konid.fly.dev/mcp"
     }
   }
